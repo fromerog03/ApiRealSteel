@@ -41,7 +41,7 @@ public class ExerciseController {
         return exerciseService.getExerciseById(id);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<ExerciseEntity> createExercise(@Valid @RequestBody ExerciseRequest request) {
         ExerciseEntity exercise = new ExerciseEntity();
         exercise.setNombre(request.getNombre());
