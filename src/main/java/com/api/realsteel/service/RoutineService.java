@@ -1,15 +1,14 @@
 package com.api.realsteel.service;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.api.realsteel.entity.RoutineEntity;
 import com.api.realsteel.entity.UserEntity;
 import com.api.realsteel.error.ResourceNotFoundException;
 import com.api.realsteel.repository.RoutineRepository;
 import com.api.realsteel.repository.UserRepository;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class RoutineService {
@@ -24,9 +23,10 @@ public class RoutineService {
 
     public RoutineEntity createRoutine(String userId, RoutineEntity routine) {
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id " + userId));
         routine.setUser(user);
         routine.setFechaCreacion(LocalDateTime.now());
+        routine.setActiva(true);
         return routineRepository.save(routine);
     }
 
@@ -40,12 +40,14 @@ public class RoutineService {
 
     public RoutineEntity getRoutineById(Long id) {
         return routineRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Routine not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Rutina no encontrada con id " + id));
     }
 
     public RoutineEntity updateRoutine(Long id, RoutineEntity update) {
         RoutineEntity existing = getRoutineById(id);
         if (update.getNombre() != null) existing.setNombre(update.getNombre());
+        if (update.getDescripcion() != null) existing.setDescripcion(update.getDescripcion());
+        if (update.getActiva() != null) existing.setActiva(update.getActiva());
         return routineRepository.save(existing);
     }
 

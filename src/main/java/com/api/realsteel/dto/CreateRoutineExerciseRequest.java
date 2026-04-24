@@ -1,5 +1,6 @@
 package com.api.realsteel.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public class CreateRoutineExerciseRequest {
@@ -7,32 +8,31 @@ public class CreateRoutineExerciseRequest {
     @NotNull(message = "El exerciseId es obligatorio")
     private Long exerciseId;
 
-    @NotNull(message = "El día de la semana es obligatorio")
+    @NotBlank(message = "El día de la semana es obligatorio")
     private String diaSemana;
 
     private Integer orden;
 
-    public Long getExerciseId() {
-        return exerciseId;
-    }
+    // NUEVO: planificación de la rutina
+    private Integer seriesObjetivo;
+    private Integer repsObjetivo;
+    private Double pesoObjetivo;
 
-    public void setExerciseId(Long exerciseId) {
-        this.exerciseId = exerciseId;
-    }
+    public Long getExerciseId() { return exerciseId; }
+    public void setExerciseId(Long exerciseId) { this.exerciseId = exerciseId; }
 
-    public String getDiaSemana() {
-        return diaSemana;
-    }
+    public String getDiaSemana() { return diaSemana; }
+    public void setDiaSemana(String diaSemana) { this.diaSemana = diaSemana; }
 
-    public void setDiaSemana(String diaSemana) {
-        this.diaSemana = diaSemana;
-    }
+    public Integer getOrden() { return orden; }
+    public void setOrden(Integer orden) { this.orden = orden; }
 
-    public Integer getOrden() {
-        return orden;
-    }
+    public Integer getSeriesObjetivo() { return seriesObjetivo; }
+    public void setSeriesObjetivo(Integer seriesObjetivo) { this.seriesObjetivo = seriesObjetivo; }
 
-    public void setOrden(Integer orden) {
-        this.orden = orden;
-    }
+    public Integer getRepsObjetivo() { return repsObjetivo; }
+    public void setRepsObjetivo(Integer repsObjetivo) { this.repsObjetivo = repsObjetivo; }
+
+    public Double getPesoObjetivo() { return pesoObjetivo; }
+    public void setPesoObjetivo(Double pesoObjetivo) { this.pesoObjetivo = pesoObjetivo; }
 }

@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -21,15 +22,27 @@ public class SessionController {
         this.sessionService = sessionService;
     }
 
+    // Crear sesión (el usuario llega al gimnasio)
     @PostMapping("/user/{userId}")
     public ResponseEntity<SessionEntity> createSession(@PathVariable String userId,
                                                        @Valid @RequestBody CreateSessionRequest request) {
-        SessionEntity created = sessionService.createSession(userId,
+        SessionEntity created = sessionService.createSession(
+                userId,
                 request.getFecha(),
+                request.getHoraInicio(),
+                request.getHoraFin(),
                 request.getRutinaId(),
-                request.getDuracion(),
-                request.getCalorias());
+                request.getCalorias(),
+                request.getNotas());
         return new ResponseEntity<>(created, HttpStatus.CREATED);
+    }
+
+    // NUEVO: finalizar sesión (el usuario sale del gimnasio — actualiza hora_fin)
+    @PatchMapping("/{id}/finalizar")
+    public ResponseEntity<SessionEntity> finalizarSesion(@PathVariable Long id,
+                                                         @RequestParam String horaFin) {
+        SessionEntity updated = sessionService.finalizarSesion(id, LocalTime.parse(horaFin));
+        return ResponseEntity.ok(updated);
     }
 
     @GetMapping("/user/{userId}")

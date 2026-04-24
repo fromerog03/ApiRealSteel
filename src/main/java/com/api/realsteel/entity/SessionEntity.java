@@ -1,23 +1,44 @@
 package com.api.realsteel.entity;
 
-import jakarta.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
-import java.time.LocalDateTime;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "sessions")
 public class SessionEntity {
 
+    // CAMBIO: antes @Column(name = "id"), ahora apunta a "session_id" que es la PK real
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "session_id")
     private Long sessionId;
 
-    private LocalDateTime fecha;
+    // CAMBIO: fecha separada de hora. Antes era LocalDateTime 'fecha',
+    // ahora es LocalDate 'fecha' + LocalTime 'horaInicio' + LocalTime 'horaFin'
+    // para que el usuario pueda registrar entrada y salida del gimnasio.
+    @Column(name = "fecha", nullable = false)
+    private LocalDate fecha;
 
-    private Integer duracion;
+    @Column(name = "hora_inicio")
+    private LocalTime horaInicio;
 
+    @Column(name = "hora_fin")
+    private LocalTime horaFin;
+
+    @Column(name = "calorias")
     private Integer calorias;
+
+    @Column(name = "notas")
+    private String notas;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -37,20 +58,28 @@ public class SessionEntity {
         this.sessionId = sessionId;
     }
 
-    public LocalDateTime getFecha() {
+    public LocalDate getFecha() {
         return fecha;
     }
 
-    public void setFecha(LocalDateTime fecha) {
+    public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
     }
 
-    public Integer getDuracion() {
-        return duracion;
+    public LocalTime getHoraInicio() {
+        return horaInicio;
     }
 
-    public void setDuracion(Integer duracion) {
-        this.duracion = duracion;
+    public void setHoraInicio(LocalTime horaInicio) {
+        this.horaInicio = horaInicio;
+    }
+
+    public LocalTime getHoraFin() {
+        return horaFin;
+    }
+
+    public void setHoraFin(LocalTime horaFin) {
+        this.horaFin = horaFin;
     }
 
     public Integer getCalorias() {
@@ -59,6 +88,14 @@ public class SessionEntity {
 
     public void setCalorias(Integer calorias) {
         this.calorias = calorias;
+    }
+
+    public String getNotas() {
+        return notas;
+    }
+
+    public void setNotas(String notas) {
+        this.notas = notas;
     }
 
     public UserEntity getUser() {

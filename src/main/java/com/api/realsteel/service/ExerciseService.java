@@ -1,12 +1,11 @@
 package com.api.realsteel.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.api.realsteel.entity.ExerciseEntity;
 import com.api.realsteel.error.ResourceNotFoundException;
 import com.api.realsteel.repository.ExerciseRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ExerciseService {
@@ -21,9 +20,13 @@ public class ExerciseService {
         return exerciseRepository.findAll();
     }
 
+    public List<ExerciseEntity> getByGrupoMuscular(String grupoMuscular) {
+        return exerciseRepository.findByGrupoMuscularIgnoreCase(grupoMuscular);
+    }
+
     public ExerciseEntity getExerciseById(Long id) {
         return exerciseRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Exercise not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Ejercicio no encontrado con id " + id));
     }
 
     public ExerciseEntity createExercise(ExerciseEntity exercise) {

@@ -25,7 +25,7 @@ public class RoutineController {
     public ResponseEntity<RoutineEntity> createRoutine(@Valid @RequestBody CreateRoutineRequest request) {
         RoutineEntity routine = new RoutineEntity();
         routine.setNombre(request.getNombre());
-
+        routine.setDescripcion(request.getDescripcion());
         RoutineEntity created = routineService.createRoutine(request.getUserId(), routine);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
@@ -46,9 +46,11 @@ public class RoutineController {
     }
 
     @PutMapping("/{id:\\d+}")
-    public RoutineEntity updateRoutine(@PathVariable Long id, @Valid @RequestBody CreateRoutineRequest request) {
+    public RoutineEntity updateRoutine(@PathVariable Long id,
+                                       @Valid @RequestBody CreateRoutineRequest request) {
         RoutineEntity update = new RoutineEntity();
         update.setNombre(request.getNombre());
+        update.setDescripcion(request.getDescripcion());
         return routineService.updateRoutine(id, update);
     }
 

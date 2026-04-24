@@ -1,24 +1,16 @@
 package com.api.realsteel.controller;
 
-import java.util.List;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.api.realsteel.dto.LoginRequest;
+import com.api.realsteel.dto.LoginResponse;
 import com.api.realsteel.dto.UserRequest;
 import com.api.realsteel.entity.UserEntity;
 import com.api.realsteel.service.UserService;
-
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -31,6 +23,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    // REGISTRO
     @PostMapping("/create")
     public ResponseEntity<UserEntity> createUser(@Valid @RequestBody UserRequest userRequest) {
         UserEntity user = new UserEntity();
@@ -38,8 +31,15 @@ public class UserController {
         user.setNombre(userRequest.getNombre());
         user.setEmail(userRequest.getEmail());
         user.setPassword(userRequest.getPassword());
-        user.setFechaRegistro(java.time.LocalDateTime.now());
+        user.setGimnasio(userRequest.getGimnasio());
         return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
+    }
+
+    // NUEVO: LOGIN
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+        LoginResponse response = userService.login(request);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping({"", "/getAll"})
@@ -53,11 +53,13 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public UserEntity updateUser(@PathVariable String id, @Valid @RequestBody UserRequest userRequest) {
+    public UserEntity updateUser(@PathVariable String id,
+                                 @Valid @RequestBody UserRequest userRequest) {
         UserEntity update = new UserEntity();
         update.setNombre(userRequest.getNombre());
         update.setEmail(userRequest.getEmail());
         update.setPassword(userRequest.getPassword());
+        update.setGimnasio(userRequest.getGimnasio());
         return userService.updateUser(id, update);
     }
 

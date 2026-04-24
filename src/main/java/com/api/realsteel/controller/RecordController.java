@@ -21,20 +21,31 @@ public class RecordController {
         this.recordService = recordService;
     }
 
+    // Guardar una serie (peso + reps + número de serie)
     @PostMapping("/session/{sessionId}")
     public ResponseEntity<RecordEntity> createRecord(@PathVariable Long sessionId,
                                                      @Valid @RequestBody CreateRecordRequest request) {
         RecordEntity created = recordService.createRecord(
                 sessionId,
                 request.getExerciseId(),
+                request.getNumeroSerie(),
                 request.getPeso(),
                 request.getRepeticiones(),
-                request.getHoraRegistro());
+                request.getHoraRegistro(),
+                request.getCompletado());
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
+    // Todos los records de una sesión
     @GetMapping("/session/{sessionId}")
     public List<RecordEntity> getSessionRecords(@PathVariable Long sessionId) {
         return recordService.getRecordsBySession(sessionId);
+    }
+
+    // NUEVO: historial de un ejercicio para un usuario (para las estadísticas)
+    @GetMapping("/user/{userId}/exercise/{exerciseId}")
+    public List<RecordEntity> getHistorial(@PathVariable String userId,
+                                           @PathVariable Long exerciseId) {
+        return recordService.getRecordsByUserAndExercise(userId, exerciseId);
     }
 }

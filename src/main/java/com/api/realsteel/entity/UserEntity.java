@@ -21,14 +21,24 @@ public class UserEntity {
     @Column(name = "user_id")
     private String userId;
 
+    @Column(name = "nombre", nullable = false)
     private String nombre;
 
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    private LocalDateTime fechaRegistro;
-
+    // CAMBIO: la contraseña NUNCA se devuelve en las respuestas JSON (WRITE_ONLY)
+    // y en el servicio se guardará hasheada con BCrypt
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Column(name = "password")
     private String password;
+
+    // NUEVO: campo gimnasio para guardar el gimnasio seleccionado en Extremadura
+    @Column(name = "gimnasio")
+    private String gimnasio;
+
+    @Column(name = "fecha_registro")
+    private LocalDateTime fechaRegistro;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -42,14 +52,6 @@ public class UserEntity {
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    public LocalDateTime getFechaRegistro() {
-        return fechaRegistro;
-    }
-
-    public void setFechaRegistro(LocalDateTime fechaRegistro) {
-        this.fechaRegistro = fechaRegistro;
     }
 
     public String getNombre() {
@@ -74,6 +76,22 @@ public class UserEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getGimnasio() {
+        return gimnasio;
+    }
+
+    public void setGimnasio(String gimnasio) {
+        this.gimnasio = gimnasio;
+    }
+
+    public LocalDateTime getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(LocalDateTime fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
     }
 
     public List<RoutineEntity> getRoutines() {

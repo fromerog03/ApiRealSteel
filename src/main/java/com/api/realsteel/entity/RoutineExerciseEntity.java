@@ -7,64 +7,58 @@ import jakarta.persistence.*;
 @Table(name = "routine_exercises")
 public class RoutineExerciseEntity {
 
-    @EmbeddedId
-    private RoutineExerciseId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
+    @Column(name = "dia_semana", nullable = false)
+    private String diaSemana;
+
+    @Column(name = "orden")
     private Integer orden;
 
+    @Column(name = "series_objetivo")
+    private Integer seriesObjetivo;
+
+    @Column(name = "reps_objetivo")
+    private Integer repsObjetivo;
+
+    @Column(name = "peso_objetivo")
+    private Double pesoObjetivo;
+
     @JsonIgnore
-    @MapsId("rutinaId")
     @ManyToOne
-    @JoinColumn(name = "rutina_id")
+    @JoinColumn(name = "rutina_id", nullable = false)
     private RoutineEntity routine;
 
-    @MapsId("ejercicioId")
     @ManyToOne
-    @JoinColumn(name = "ejercicio_id")
+    @JoinColumn(name = "ejercicio_id", nullable = false)
     private ExerciseEntity exercise;
 
     public RoutineExerciseEntity() {}
 
-    public RoutineExerciseId getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(RoutineExerciseId id) {
-        this.id = id;
-    }
+    public String getDiaSemana() { return diaSemana; }
+    public void setDiaSemana(String diaSemana) { this.diaSemana = diaSemana; }
 
-    public String getDiaSemana() {
-        return id != null ? id.getDiaSemana() : null;
-    }
+    public Integer getOrden() { return orden; }
+    public void setOrden(Integer orden) { this.orden = orden; }
 
-    public void setDiaSemana(String diaSemana) {
-        if (id == null) {
-            id = new RoutineExerciseId();
-        }
-        id.setDiaSemana(diaSemana);
-    }
+    public Integer getSeriesObjetivo() { return seriesObjetivo; }
+    public void setSeriesObjetivo(Integer seriesObjetivo) { this.seriesObjetivo = seriesObjetivo; }
 
-    public Integer getOrden() {
-        return orden;
-    }
+    public Integer getRepsObjetivo() { return repsObjetivo; }
+    public void setRepsObjetivo(Integer repsObjetivo) { this.repsObjetivo = repsObjetivo; }
 
-    public void setOrden(Integer orden) {
-        this.orden = orden;
-    }
+    public Double getPesoObjetivo() { return pesoObjetivo; }
+    public void setPesoObjetivo(Double pesoObjetivo) { this.pesoObjetivo = pesoObjetivo; }
 
-    public RoutineEntity getRoutine() {
-        return routine;
-    }
+    public RoutineEntity getRoutine() { return routine; }
+    public void setRoutine(RoutineEntity routine) { this.routine = routine; }
 
-    public void setRoutine(RoutineEntity routine) {
-        this.routine = routine;
-    }
-
-    public ExerciseEntity getExercise() {
-        return exercise;
-    }
-
-    public void setExercise(ExerciseEntity exercise) {
-        this.exercise = exercise;
-    }
+    public ExerciseEntity getExercise() { return exercise; }
+    public void setExercise(ExerciseEntity exercise) { this.exercise = exercise; }
 }

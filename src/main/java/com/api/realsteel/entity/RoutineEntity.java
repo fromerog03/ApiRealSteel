@@ -1,22 +1,42 @@
 package com.api.realsteel.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "routines")
 public class RoutineEntity {
 
+    // CAMBIO: antes @Column(name = "id"), ahora apunta a "rutina_id" que es la PK real
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "rutina_id")
     private Long rutinaId;
 
+    @Column(name = "nombre")
     private String nombre;
 
+    @Column(name = "descripcion")
+    private String descripcion;
+
+    // NUEVO: campo activa para marcar la rutina en uso
+    @Column(name = "activa")
+    private Boolean activa = true;
+
+    @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
 
     @ManyToOne
@@ -43,6 +63,22 @@ public class RoutineEntity {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public Boolean getActiva() {
+        return activa;
+    }
+
+    public void setActiva(Boolean activa) {
+        this.activa = activa;
     }
 
     public LocalDateTime getFechaCreacion() {
