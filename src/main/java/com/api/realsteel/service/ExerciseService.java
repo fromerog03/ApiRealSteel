@@ -24,6 +24,10 @@ public class ExerciseService {
         return exerciseRepository.findByGrupoMuscularIgnoreCase(grupoMuscular);
     }
 
+    public List<ExerciseEntity> getByTipo(String tipo) {
+        return exerciseRepository.findByTipoIgnoreCase(tipo);
+    }
+
     public ExerciseEntity getExerciseById(Long id) {
         return exerciseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Ejercicio no encontrado con id " + id));
@@ -39,6 +43,7 @@ public class ExerciseService {
         if (update.getGrupoMuscular() != null) existing.setGrupoMuscular(update.getGrupoMuscular());
         if (update.getDescripcion() != null) existing.setDescripcion(update.getDescripcion());
         if (update.getImagenUrl() != null) existing.setImagenUrl(update.getImagenUrl());
+        if (update.getTipo() != null) existing.setTipo(update.getTipo());
         return exerciseRepository.save(existing);
     }
 

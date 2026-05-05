@@ -21,16 +21,19 @@ public class ExerciseController {
         this.exerciseService = exerciseService;
     }
 
-    // Todos los ejercicios
     @GetMapping("/getAll")
     public List<ExerciseEntity> getExercises() {
         return exerciseService.getAllExercises();
     }
 
-    // NUEVO: filtrar por grupo muscular  ej: /exercises/musculo/Pecho
     @GetMapping("/musculo/{grupoMuscular}")
     public List<ExerciseEntity> getByMusculo(@PathVariable String grupoMuscular) {
         return exerciseService.getByGrupoMuscular(grupoMuscular);
+    }
+
+    @GetMapping("/tipo/{tipo}")
+    public List<ExerciseEntity> getByTipo(@PathVariable String tipo) {
+        return exerciseService.getByTipo(tipo);
     }
 
     @GetMapping("/{id:\\d+}")
@@ -45,6 +48,7 @@ public class ExerciseController {
         exercise.setGrupoMuscular(request.getGrupoMuscular());
         exercise.setDescripcion(request.getDescripcion());
         exercise.setImagenUrl(request.getImagenUrl());
+        exercise.setTipo(request.getTipo());
         return new ResponseEntity<>(exerciseService.createExercise(exercise), HttpStatus.CREATED);
     }
 
@@ -56,6 +60,7 @@ public class ExerciseController {
         update.setGrupoMuscular(request.getGrupoMuscular());
         update.setDescripcion(request.getDescripcion());
         update.setImagenUrl(request.getImagenUrl());
+        update.setTipo(request.getTipo());
         return exerciseService.updateExercise(id, update);
     }
 

@@ -10,6 +10,7 @@ import com.api.realsteel.entity.ExerciseEntity;
 @Repository
 public interface ExerciseRepository extends JpaRepository<ExerciseEntity, Long> {
 
-    // NUEVO: filtrar ejercicios por grupo muscular (ignorando mayúsculas)
     List<ExerciseEntity> findByGrupoMuscularIgnoreCase(String grupoMuscular);
+
+    List<ExerciseEntity> findByTipoIgnoreCase(String tipo);
 }

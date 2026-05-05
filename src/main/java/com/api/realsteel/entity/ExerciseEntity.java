@@ -11,8 +11,6 @@ import jakarta.persistence.Table;
 @Table(name = "exercises")
 public class ExerciseEntity {
 
-    // CAMBIO: antes apuntaba a @Column(name = "id") que era la columna duplicada.
-    // Ahora apunta a "ejercicio_id" que es la PK real de la tabla.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ejercicio_id")
@@ -30,45 +28,26 @@ public class ExerciseEntity {
     @Column(name = "imagen_url")
     private String imagenUrl;
 
+    @Column(name = "tipo")
+    private String tipo;
+
     public ExerciseEntity() {}
 
-    public Long getEjercicioId() {
-        return ejercicioId;
-    }
+    public Long getEjercicioId() { return ejercicioId; }
+    public void setEjercicioId(Long ejercicioId) { this.ejercicioId = ejercicioId; }
 
-    public void setEjercicioId(Long ejercicioId) {
-        this.ejercicioId = ejercicioId;
-    }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public String getNombre() {
-        return nombre;
-    }
+    public String getGrupoMuscular() { return grupoMuscular; }
+    public void setGrupoMuscular(String grupoMuscular) { this.grupoMuscular = grupoMuscular; }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
-    public String getGrupoMuscular() {
-        return grupoMuscular;
-    }
+    public String getImagenUrl() { return imagenUrl; }
+    public void setImagenUrl(String imagenUrl) { this.imagenUrl = imagenUrl; }
 
-    public void setGrupoMuscular(String grupoMuscular) {
-        this.grupoMuscular = grupoMuscular;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public String getImagenUrl() {
-        return imagenUrl;
-    }
-
-    public void setImagenUrl(String imagenUrl) {
-        this.imagenUrl = imagenUrl;
-    }
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
 }
