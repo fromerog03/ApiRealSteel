@@ -1,6 +1,8 @@
 package com.api.realsteel.error;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +20,18 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+    // AÑADIDO: logger para ver errores en Render
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<Object> handleNotFound(ResourceNotFoundException ex, WebRequest request) {
         return buildResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Object> handleIllegalArgument(IllegalArgumentException ex, WebRequest request) {
+        log.warn("IllegalArgumentException: {}", ex.getMessage());
+        return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
     }
 
     @Override
@@ -39,6 +50,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAll(Exception ex, WebRequest request) {
+        // AÑADIDO: loguear el error completo con stack trace
+        log.error("Error inesperado en {}: {}", request.getDescription(false), ex.getMessage(), ex);
         return buildResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred", request);
     }
 
@@ -76,29 +89,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             this.details = details;
         }
 
-        public LocalDateTime getTimestamp() {
-            return timestamp;
-        }
-
-        public int getStatus() {
-            return status;
-        }
-
-        public String getError() {
-            return error;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public String getPath() {
-            return path;
-        }
-
-        public Map<String, ?> getDetails() {
-            return details;
-        }
+        public LocalDateTime getTimestamp() { return timestamp; }
+        public int getStatus() { return status; }
+        public String getError() { return error; }
+        public String getMessage() { return message; }
+        public String getPath() { return path; }
+        public Map<String, ?> getDetails() { return details; }
     }
 }
-
