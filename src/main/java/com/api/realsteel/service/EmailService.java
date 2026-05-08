@@ -17,8 +17,13 @@ public class EmailService {
     private final RestTemplate restTemplate = new RestTemplate();
 
     public void enviarCodigoReset(String email, String nombre, String codigo) {
+        // Log temporal para verificar que la key llega correctamente
+        System.out.println("BREVO KEY: " + (brevoApiKey != null && !brevoApiKey.isBlank()
+                ? brevoApiKey.substring(0, 10) + "..."
+                : "NULL O VACÍA"));
+
         if (brevoApiKey == null || brevoApiKey.isBlank()) {
-            System.out.println("BREVO NO CONFIGURADO — código: " + codigo);
+            System.out.println("BREVO NO CONFIGURADO — código para " + email + ": " + codigo);
             return;
         }
 
@@ -48,6 +53,7 @@ public class EmailService {
                 request,
                 String.class
             );
+            System.out.println("Email enviado correctamente a: " + email);
         } catch (Exception e) {
             System.err.println("Error Brevo: " + e.getMessage());
             throw new RuntimeException("Error al enviar el email");
