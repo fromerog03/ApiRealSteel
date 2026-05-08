@@ -1,6 +1,5 @@
 package com.api.realsteel.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -10,16 +9,11 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
 
-    public EmailService(
-            @Autowired(required = false) JavaMailSender mailSender) {
+    public EmailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
 
     public void enviarCodigoReset(String email, String nombre, String codigo) {
-        if (mailSender == null) {
-            System.out.println("EMAIL NO CONFIGURADO — código: " + codigo);
-            return;
-        }
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
         message.setSubject("RealSteel — Código de recuperación");
