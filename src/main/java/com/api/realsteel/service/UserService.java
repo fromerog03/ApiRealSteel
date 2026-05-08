@@ -10,42 +10,44 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
-    // NUEVO: inyectamos el encoder de BCrypt definido en SecurityConfig
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    // Mapa en memoria para códigos de recuperación {email -> codigo}
+    private final Map<String, String> codigosReset = new ConcurrentHashMap<>();
+
+    public UserService(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder,
+                       EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
 
     public UserEntity createUser(UserEntity user) {
-        // Comprobamos que el email no esté ya registrado
         if (userRepository.findByEmail(user.getEmail()) != null) {
             throw new IllegalArgumentException("Ya existe un usuario con ese email");
         }
-        // CAMBIO: hasheamos la contraseña antes de guardarla
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setFechaRegistro(LocalDateTime.now());
         return userRepository.save(user);
     }
 
-    // NUEVO: método de login
     public LoginResponse login(LoginRequest request) {
-        // Buscamos por email
         UserEntity user = userRepository.findByEmail(request.getEmail());
         if (user == null) {
             throw new ResourceNotFoundException("No existe ningún usuario con ese email");
         }
-        // Comparamos la contraseña introducida con el hash guardado
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("Contraseña incorrecta");
         }
-        // Login correcto: devolvemos los datos que necesita el Flutter
         return new LoginResponse(
                 user.getUserId(),
                 user.getNombre(),
@@ -68,7 +70,6 @@ public class UserService {
         if (update.getNombre() != null) existing.setNombre(update.getNombre());
         if (update.getEmail() != null) existing.setEmail(update.getEmail());
         if (update.getGimnasio() != null) existing.setGimnasio(update.getGimnasio());
-        // Si actualiza la contraseña también la hasheamos
         if (update.getPassword() != null && !update.getPassword().isBlank()) {
             existing.setPassword(passwordEncoder.encode(update.getPassword()));
         }
@@ -78,5 +79,29 @@ public class UserService {
     public void deleteUser(String id) {
         UserEntity existing = getUserById(id);
         userRepository.delete(existing);
+    }
+
+    public void enviarCodigoRecuperacion(String email) {
+        UserEntity user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new ResourceNotFoundException("No existe ningún usuario con ese email");
+        }
+        String codigo = String.format("%06d", new java.util.Random().nextInt(999999));
+        codigosReset.put(email, codigo);
+        emailService.enviarCodigoReset(email, user.getNombre(), codigo);
+    }
+
+    public void confirmarCambioPassword(String email, String codigo, String nuevaPassword) {
+        final String codigoGuardado = codigosReset.get(email);
+        if (codigoGuardado == null || !codigoGuardado.equals(codigo)) {
+            throw new IllegalArgumentException("Código incorrecto o expirado");
+        }
+        UserEntity user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new ResourceNotFoundException("Usuario no encontrado");
+        }
+        user.setPassword(passwordEncoder.encode(nuevaPassword));
+        userRepository.save(user);
+        codigosReset.remove(email);
     }
 }

@@ -2,6 +2,9 @@ package com.api.realsteel.controller;
 
 import com.api.realsteel.dto.LoginRequest;
 import com.api.realsteel.dto.LoginResponse;
+import com.api.realsteel.dto.PasswordResetConfirmRequest;
+import com.api.realsteel.dto.PasswordResetRequest;
+import com.api.realsteel.dto.UpdateUserRequest;
 import com.api.realsteel.dto.UserRequest;
 import com.api.realsteel.entity.UserEntity;
 import com.api.realsteel.service.UserService;
@@ -11,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -23,7 +27,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    // REGISTRO
     @PostMapping("/create")
     public ResponseEntity<UserEntity> createUser(@Valid @RequestBody UserRequest userRequest) {
         UserEntity user = new UserEntity();
@@ -35,7 +38,6 @@ public class UserController {
         return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
     }
 
-    // NUEVO: LOGIN
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         LoginResponse response = userService.login(request);
@@ -54,13 +56,31 @@ public class UserController {
 
     @PutMapping("/{id}")
     public UserEntity updateUser(@PathVariable String id,
-                                 @Valid @RequestBody UserRequest userRequest) {
+                                 @Valid @RequestBody UpdateUserRequest request) {
         UserEntity update = new UserEntity();
-        update.setNombre(userRequest.getNombre());
-        update.setEmail(userRequest.getEmail());
-        update.setPassword(userRequest.getPassword());
-        update.setGimnasio(userRequest.getGimnasio());
+        update.setNombre(request.getNombre());
+        update.setEmail(request.getEmail());
+        update.setPassword(request.getPassword());
+        update.setGimnasio(request.getGimnasio());
         return userService.updateUser(id, update);
+    }
+
+    @PostMapping("/password-reset/request")
+    public ResponseEntity<Map<String, String>> requestPasswordReset(
+            @Valid @RequestBody PasswordResetRequest request) {
+        userService.enviarCodigoRecuperacion(request.getEmail());
+        return ResponseEntity.ok(Map.of("message", "Código enviado al email"));
+    }
+
+    @PostMapping("/password-reset/confirm")
+    public ResponseEntity<Map<String, String>> confirmPasswordReset(
+            @Valid @RequestBody PasswordResetConfirmRequest request) {
+        userService.confirmarCambioPassword(
+                request.getEmail(),
+                request.getCodigo(),
+                request.getNuevaPassword()
+        );
+        return ResponseEntity.ok(Map.of("message", "Contraseña actualizada correctamente"));
     }
 
     @DeleteMapping("/{id}")
